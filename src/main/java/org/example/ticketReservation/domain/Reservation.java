@@ -2,6 +2,7 @@ package org.example.ticketReservation.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -33,6 +34,6 @@ public class Reservation {
     private ReservationStatus status = ReservationStatus.ACTIVE;
 
     @Column(nullable = false, updatable = false)
-    @Builder.Default
+    @CreationTimestamp
     private LocalDateTime createdAt = LocalDateTime.now();
 }

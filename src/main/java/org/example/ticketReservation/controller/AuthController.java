@@ -1,11 +1,11 @@
 package org.example.ticketReservation.controller;
 
-import lombok.Builder;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.ticketReservation.domain.User;
-import org.example.ticketReservation.dto.LoginRequest;
-import org.example.ticketReservation.dto.UserDto;
-import org.example.ticketReservation.service.UserService;
+import org.example.ticketReservation.dto.AuthResponseDto;
+import org.example.ticketReservation.dto.LoginRequestDto;
+import org.example.ticketReservation.dto.RegisterRequestDto;
+import org.example.ticketReservation.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,23 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("api/auth")
 public class AuthController {
-    private final UserService userService;
-
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest request){
-        return userService.login(request.getEmail(), request.getPassword())
-                .map(user -> ResponseEntity.ok("Login Successful! Token generation starting "+ user.getName()))
-                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Email or Password"));
-    }
+    private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody UserDto userDto){
-        User user = User.builder()
-                .name(userDto.getName())
-                .email(userDto.getEmail())
-                .password(userDto.getPassword())
-                .build();
-        return ResponseEntity.ok(userService.registerUser(user));
+    public ResponseEntity<AuthResponseDto> register(@Valid @RequestBody RegisterRequestDto requestDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(requestDto));
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginRequestDto requestDto) {
+        return ResponseEntity.ok(authService.authentication(requestDto));
+    }
 }
