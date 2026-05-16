@@ -1,0 +1,17 @@
+
+services:
+  postgres-db:
+    image: postgres:15
+    container_name: reservation_database
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: superpassword123
+      POSTGRES_DB: ticket_reservation_db
+
+    ports:
+        - "5432:5432"
+    volumes:
+        - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
